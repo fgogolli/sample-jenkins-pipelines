@@ -1,0 +1,64 @@
+pipeline {
+    agent {
+        node {
+            label 'linux-x86_64'
+        }
+    }
+
+    options {
+        skipStagesAfterUnstable()
+        retry(count: 5, conditions: [agent(), kubernetesAgent(handleNonKubernetes: true), nonresumable()])
+    }
+
+    stages {
+    	stage ('Karpenter_Pipeline - Build') {
+            steps {
+                sh """ 
+                    #!/usr/bin/env bash
+                    set +x
+                    for i in {1..10}; do
+                      echo "Running iteration \${i} of build for 10 seconds ...";
+                      sleep 10;
+                    done 
+                """
+            }
+        }
+
+    	stage ('Karpenter_Pipeline - Test') {
+            steps {
+                sh """ 
+                    #!/usr/bin/env bash
+                    set +x
+                    for i in {1..10}; do
+                      echo "Running iteration \${i} of test for 10 seconds ...";
+                      sleep 10;
+                    done 
+                """
+            }
+        }
+
+    	stage ('Karpenter_Pipeline - Deploy') {
+            steps {
+                sh """ 
+                    #!/usr/bin/env bash
+                    set +x
+                    for i in {1..10}; do
+                      echo "Running iteration \${i} of deploy for 10 seconds ...";
+                      sleep 10;
+                    done 
+                """
+            }
+        }
+
+        stage ('Karpenter_Pipeline - Complete') {
+            steps {
+                sh """ 
+                    #!/usr/bin/env bash
+                    set +x
+                    sleep 10
+                    echo "Finished build #\${BUILD_NUMBER} of job \${JOB_NAME} successfully!" 
+                 """
+            }
+        }
+    }
+}

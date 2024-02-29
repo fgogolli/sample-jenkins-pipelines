@@ -1,0 +1,22 @@
+#!/usr/bin/env groovy
+
+pipelineJob('karpenter-pipeline-job') {
+    logRotator {
+        numToKeep(10)
+        daysToKeep(30)
+    }
+
+    definition {
+        cpsScm {
+            scm {
+                git {
+                    remote {
+                        url('https://github.com/fgogolli/sample-jenkins-pipelines')
+                    }
+                    branches('*/main')
+                }
+            }
+            scriptPath('cicd/pipelines/karpenter.jenkins')
+        }
+    }
+}
